@@ -9,20 +9,19 @@ export function getAllItems(): Promise<Array<Item>>{
     return new Promise((resolve, reject)=>{
 
 
-    // 1.Initiate a XMLHttpRequest
+    // 1.Initiate a XMLHttpRequest  //sometimes may have two steps
     let http = new XMLHttpRequest();
 
     // 2. setting up the call back function
     http.onreadystatechange = function (){
         if (http.readyState ===4){
-            console.log("Items on fire");
             //console.log(http.responseText);
-            let dom = $(http.responseText);
-            $(dom).find("table tbody tr").each((index, elm)=>{
-                let itemCode    = $(elm).find("td").first().text();
-                let description = $(elm).find("td").eq(1).text();
-                let qty         = $(elm).find("td").eq(2).text();
-                let unitPrice   = $(elm).find("td").last().text();
+            let dom = $(http.responseXML as any);
+            $(dom).find("item").each((index, elm)=>{
+                let itemCode    = $(elm).find("code").text();
+                let description = $(elm).find("description").text();
+                let qty         = $(elm).find("qty-on-hand").text();
+                let unitPrice   = $(elm).find("unit-price").text();
                 items.push(new Item(itemCode, description, qty, unitPrice));
             });
             resolve(items);

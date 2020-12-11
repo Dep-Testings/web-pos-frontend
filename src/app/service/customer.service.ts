@@ -16,16 +16,20 @@ export function getAllCustomers(): Promise<Array<Customer>>{
     http.onreadystatechange = function (){
         if (http.readyState ===4){
             console.log("Customers la awaa");
-            //console.log(http.responseText);
-            let dom = $(http.responseText);
-            $(dom).find("table tbody tr").each((index, elm)=>{
-                let id = $(elm).find("td").first().text();
-                let name = $(elm).find("td").eq(1).text();
-                let address = $(elm).find("td").eq(2).text();
-                let salary = $(elm).find("td").last().text();
-                customers.push(new Customer(id, name, address));
-            });
-            resolve(customers);
+            // console.log(http.responseXML);
+            if(http.responseXML){
+                console.log("check one");
+                let dom  = $(http.responseXML);
+                console.log(dom.find("table").html()); 
+                dom.find("customer").each((index, elm)=>{
+                    let id = $(elm).find("id").text();
+                    let name = $(elm).find("name").text();
+                    let address = $(elm).find("address").text();
+                    let salary = $(elm).find("salary").text();
+                    customers.push(new Customer(id, name, address));
+                });
+                resolve(customers);
+            }
         }
     }
 
