@@ -16,15 +16,20 @@ export function getAllItems(): Promise<Array<Item>>{
     http.onreadystatechange = function (){
         if (http.readyState ===4){
             //console.log(http.responseText);
-            let dom = $(http.responseXML as any);
-            $(dom).find("item").each((index, elm)=>{
-                let itemCode    = $(elm).find("code").text();
-                let description = $(elm).find("description").text();
-                let qty         = $(elm).find("qty-on-hand").text();
-                let unitPrice   = $(elm).find("unit-price").text();
-                items.push(new Item(itemCode, description, qty, unitPrice));
-            });
+            items = JSON.parse(http.responseText);
             resolve(items);
+            // if(http.readyState === 4){
+            // let dom = $(http.responseXML as any);
+            // console.log(dom.find("table").html());
+            // $(dom).find("item").each((index, elm)=>{
+            //     let itemCode    = $(elm).find("code").text();
+            //     let description = $(elm).find("description").text();
+            //     let qty         = $(elm).find("qty").text();
+            //     let unitPrice   = $(elm).find("unit-price").text();
+            //     items.push(new Item(itemCode, description, qty, unitPrice));
+            // });
+            // resolve(items);
+            // }
         }
     }
 

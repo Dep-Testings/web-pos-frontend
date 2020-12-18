@@ -9,35 +9,26 @@ import '../../../node_modules/admin-lte/plugins/datatables/jquery.dataTables.min
 import '../../../node_modules/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js';
 import '../../../node_modules/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js';
-import { getAllCustomers } from '../service/customer.service';
+import { deleteCustomer, getAllCustomers, saveCustomer } from '../service/customer.service';
 import { Customer } from '../model/customer';
+import { data } from 'jquery';
 
 $("app-manage-customers").replaceWith('<div id="manage-customers">' + manageCustomers + '</div>');
 var html = '<style>' + style + '</style>';
 $("#dashboard").append(html);
 
-/* function loadAllCustomers(): void{
-    getAllCustomers().then(function(customer: Array<Customer>){
-        for (const customer of customers){
-            $("#tbl-customers tbody").append(`
-            <tr>
-                <td>${customer.id}</td>
-                <td>${customer.name}</td> 
-                <td>${customer.address}</td>
-                <td><i class="fas fa-trash"></i></td>
-            </tr>
-            `);
-        }
-        ($("#tbl-customers") as any).DataTable({
-            "info": false,
-            "searching": false,
-            "lengthChange": false,
-            "pageLength": 5,
-        });
-    }).catch(function(){
+$("#tbl-customers tbody").on('click', 'tr .fas', async(event: Event)=>{
+    let id = ($(event.target as any).parents("tr").find("td:first-child").text());
+    try{
+        await deleteCustomer(id);
+        alert("Customer has been deleted successfull");
+        loadAllCustomers();
+    }catch(error){
+        alert("Failed to delete the customer");
+    }
+});
 
-    });    
-} */
+let dataTbale: any = null;
 
 async function loadAllCustomers(){
 
@@ -53,18 +44,44 @@ async function loadAllCustomers(){
         </tr>
         `);
     }
-    ($("#tbl-customers") as any).DataTable({
+
+    if (dataTbale){
+        ($("#tbl-customers") as any).DataTable().destroy();
+        //$("#tbl-customers tbody tr").remove();
+    }
+
+    dataTbale = ($("#tbl-customers") as any).DataTable({
         "info": false,
         "searching": false,
         "lengthChange": false,
         "pageLength": 5,
+        "ordering": false,
     });
+    dataTbale.page(Math.ceil(customers.length / 5)-1).draw(false);
  
 }
 
 loadAllCustomers();
 
 
+$("#btn-save").click(async()=>{
+    let id = <string> $("#txt-id").val();
+    let name = <string> $("#txt-name").val();
+    let address = <string> $("#txt-address").val();
 
+    /* front-end validation  */
+    if (id.match(/^C\d{3}$/) || name.trim().length === 0 || address.trim().length === 0){
+        alert("Invaid customer information");
+    }
+
+    try{
+        await saveCustomer(new Customer(id, name, address));
+        alert("Customer saved");
+        loadAllCustomers();
+    }catch(error){
+        alert("Failed to save customer");
+    }
+    
+});
 
 
