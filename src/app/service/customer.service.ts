@@ -96,9 +96,11 @@ export function saveCustomer(customer: Customer): Promise<void>{
         $.ajax({
             method: 'POST',
             url: 'http://localhost:8080/pos/customers',
-            contentType: 'application/json',
-            data: JSON.stringify(customer)
-        }).then(()=>{
+            // contentType: 'application/json',
+            // data: JSON.stringify(customer)
+            contentType: 'application/x-www-form-urlencoded',
+            data: $("#frm-customers").serialize()
+        }).then(()=>{  
             customers.push(customer);
             resolve();
         }).fail(()=>{

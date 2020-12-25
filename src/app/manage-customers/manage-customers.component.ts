@@ -70,7 +70,7 @@ $("#btn-save").click(async()=>{
     let address = <string> $("#txt-address").val();
 
     /* front-end validation  */
-    if (id.match(/^C\d{3}$/) || name.trim().length === 0 || address.trim().length === 0){
+    if (!id.match(/^C\d{3}$/) || name.trim().length === 0 || address.trim().length === 0){
         alert("Invaid customer information");
     }
 
