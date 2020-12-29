@@ -73,33 +73,13 @@ export function getAllCustomers(): Promise<Array<Customer>>{
 export function saveCustomer(customer: Customer): Promise<void>{
 
     return new Promise((resolve, reject)=>{
-        
-       /*  let http  = new XMLHttpRequest();
-
-        http.onreadystatechange = ()=>{
-            if (http.readyState == 4){
-                if(http.status == 201){
-                    customers.push(customer);
-                    resolve
-                }else{
-                    reject("Something went wrong");
-                }
-            }
-        };
-
-        http.open('POST', 'http://localhost:8080/pos/customers', true);
-
-        http.setRequestHeader('Content-Type', 'application/json');
-
-        http.send(JSON.stringify(customer)); */
-
         $.ajax({
             method: 'POST',
             url: 'http://localhost:8080/pos/customers',
-            // contentType: 'application/json',
-            // data: JSON.stringify(customer)
-            contentType: 'application/x-www-form-urlencoded',
-            data: $("#frm-customers").serialize()
+            contentType: 'application/json',
+            data: JSON.stringify(customer)
+            // contentType: 'application/x-www-form-urlencoded',
+            // data: $("#frm-customers").serialize()
         }).then(()=>{  
             customers.push(customer);
             resolve();
